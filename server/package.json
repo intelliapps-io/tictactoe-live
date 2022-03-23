@@ -1,0 +1,15 @@
+{
+  "name": "socket-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx ts-node-dev ./src/index.ts"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "ts-node": "^10.7.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.2"
+  }
+}
