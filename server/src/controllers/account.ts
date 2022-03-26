@@ -1,7 +1,12 @@
 import express from 'express'
+import { Req } from '../helpers/auth'
 import { logger } from '../helpers/logger'
 import { IUser, User } from '../models/userModel'
 const router = express.Router()
+
+router.get('/me', async (req: Req, res) => {
+  logger.info(req.userId)
+})
 
 router.post('/login', async (req, res) => {
   try {
@@ -12,12 +17,15 @@ router.post('/login', async (req, res) => {
     logger.info(user.email)
 
     //generate a token 
-    const token = await user.generateAuthToken()
-    res.status(200).send({
-      status: 200,
-      message: 'Successfully Signin',
-      data: {
-        token
+    const tokens = await user.generateAuthTokens()
+
+    res.cookie("refresh-token", tokens.refreshToken);
+    res.cookie("access-token", tokens.accessToken);
+    
+    res.status(200).json({
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
       }
     })
   } catch (error) {

@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { config } from './helpers/config';
 import mongoose from 'mongoose';
 import accountController from "./controllers/account"
+import { authMiddleware } from './helpers/auth';
 
 /**
  * Connect MongoDB
@@ -42,16 +43,17 @@ app.use(cors({
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-  logger.error(__filename, err);
-  res.status(err.status || 500).json({
-    message: err.message,
-    errors: err.errors,
-  });
-});
+app.use(authMiddleware);
+// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+//   if (res.headersSent) {
+//     return next(err);
+//   }
+//   logger.error(__filename, err);
+//   res.status(err.status || 500).json({
+//     message: err.message,
+//     errors: err.errors,
+//   });
+// });
 
 app.get('/', (req, res) => {
   res.send('Backend running on port 3000')

@@ -20,7 +20,7 @@ interface ITokenData {
 const REFRESH_TOKEN_SECRET = "CHANGE_ME!";
 const ACCESS_TOKEN_SECRET = "CHNAGE_ME_TOO!";
 
-export const createTokens = (user: IUserDocument) => {
+export const createTokens = (user: IUserDocument): { refreshToken: string , accessToken: string } => {
   const refreshToken = sign(
     { userId: user._id, authCount: user.authCount },
     REFRESH_TOKEN_SECRET, { expiresIn: "7d" }

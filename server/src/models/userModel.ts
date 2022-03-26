@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
+import { createTokens } from '../helpers/auth';
 const { Schema } = mongoose;
 
 export interface IUser {
@@ -17,7 +18,7 @@ export interface IUser {
 
 // methods are part of document
 export interface IUserDocument extends IUser, Document {
-  generateAuthToken: () => Promise<string>
+  generateAuthTokens: () => Promise<{ refreshToken: string , accessToken: string }>
 }
 
 // statics are part of model
@@ -66,12 +67,12 @@ userSchema.pre('save', async function (next) {
 })
 
 // Get login token
-userSchema.methods.generateAuthToken = async function (): Promise<string> {
-  const user = this
-  const token = jwt.sign({_id: user._id.toString() }, 'PASS_ENCRYPT')
+userSchema.methods.generateAuthTokens = async function (): Promise<{ refreshToken: string , accessToken: string }> {
+  const user = this as IUserDocument
+  const tokens = createTokens(user)
   // user.tokens = user.tokens.concat({ token })
   // await user.save()
-  return token
+  return tokens
 }
 
 // Find user account
