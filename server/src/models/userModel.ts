@@ -48,7 +48,7 @@ const userSchema: mongoose.Schema<IUserDocument> = new Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 7,
+    minlength: 3,
     validate(value: string) {
       if (value.toLowerCase().includes('password')) {
         throw new Error('Password cannot contain "Password"')

@@ -1,6 +1,7 @@
 import path from 'path';
-import { readFileSync } from 'fs';
 const ROOT_DIR = path.join(__dirname, "..", "..");
+
+export type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
 export interface IConfig {
   ROOT_DIR: string

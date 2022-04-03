@@ -6,15 +6,17 @@ import { config } from '../../helpers/config';
 import { AppHeader } from './AppHeader';
 import { AuthContext } from './AuthContext';
 
-export default function LoginForm() {
-  const [email, setEmail] = useState<string>('jared.moore@intelliapps.io');
-  const [password, setPassword] = useState<string>('intelliapps');
+export default function SignupForm() {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [errMessage, setErrMessage] = useState<string | null>('')
   const { axios, setAuthState } = useContext(AuthContext);
   const nav = useNavigate()
 
   const handleLogin = () => {
-    axios.post('/account/login', { email, password }, {
+    axios.put('/account/signup', { email, password, firstName, lastName }, {
       withCredentials: true,
       headers: {
         'Access-Control-Allow-Origin': config.BASE_SERVER_URL,
@@ -36,16 +38,18 @@ export default function LoginForm() {
 
   return (
     <>
-      <AppHeader />
       <ScrollView>
+      <AppHeader />
         <View style={styles.contentView}>
-          <Text style={styles.subHeader}>Login</Text>
+          <Text style={styles.subHeader}>Signup</Text>
           <View style={styles.buttonsContainer}>
             <Input value={email} onChangeText={val => setEmail(val)} placeholder='Email' />
+            <Input value={firstName} onChangeText={val => setFirstName(val)} placeholder='First Name' />
+            <Input value={lastName} onChangeText={val => setLastName(val)} placeholder='Last Name' />
             <Input placeholder="Password" secureTextEntry={true} value={password} onChangeText={val => setPassword(val)} />
             <Text style={{ color: 'red', flexDirection: 'row' }}>{errMessage}</Text>
             <Button
-              title="Log in"
+              title="Sign Up"
               loading={false}
               loadingProps={{ size: 'small', color: 'white' }}
               buttonStyle={{
@@ -61,6 +65,7 @@ export default function LoginForm() {
               }}
               onPress={handleLogin}
             />
+
           </View>
         </View>
       </ScrollView>

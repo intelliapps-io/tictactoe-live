@@ -1,13 +1,21 @@
 //AuthContext.js
 import axios, { Axios } from 'axios';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
+import { useNavigate } from 'react-router-native';
 import { config } from '../../helpers/config';
 
 export interface IAuthState {
   accessToken: string | null,
   refreshToken: string | null,
-  authenticated: boolean,
+  user: {
+    _id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    totalGames: number;
+    totalWins: number;
+  } | null
 }
 
 export interface IAuthContext {
@@ -21,11 +29,13 @@ export interface IAuthContext {
 const AuthContext = createContext<IAuthContext>(null as any);
 
 const AuthProvider = ({ children }: { children: any }) => {
-  
+
+  const naviage = useNavigate()
+
   const [authState, setAuthState] = useState<IAuthState>({
     accessToken: null,
     refreshToken: null,
-    authenticated: false,
+    user: null,
   });
 
   const axiosItem = axios.create({
@@ -39,7 +49,6 @@ const AuthProvider = ({ children }: { children: any }) => {
         //@ts-ignore
         config.headers.Authorization = `Bearer ${getAccessToken()}`;
       }
-
       return config;
     },
     error => {
@@ -48,18 +57,37 @@ const AuthProvider = ({ children }: { children: any }) => {
   );
 
   const logout = async (): Promise<boolean> => {
-    await Keychain.resetGenericPassword();
-    setAuthState({
-      accessToken: null,
-      refreshToken: null,
-      authenticated: false,
-    });
+    // await Keychain.resetGenericPassword();
+    await axios.post(config.BASE_SERVER_URL + '/account/logout', {}, { withCredentials: true })
+    setTimeout(() => {
+      setAuthState({
+        accessToken: null,
+        refreshToken: null,
+        user: null,
+      });
+    }, 200)
     return true
   };
 
   const getAccessToken = (): string | null => {
     return authState.accessToken;
   };
+
+  useEffect(() => {
+    axios.get(config.BASE_SERVER_URL + '/account/me', {
+      withCredentials: true,
+      headers: {
+        'Access-Control-Allow-Origin': config.BASE_SERVER_URL,
+      }
+    }).then(res => {    
+      setAuthState({
+        ...authState,
+        user: res.data,
+      });
+    }).catch(err => {
+      console.log(err)
+    })
+  }, [])
 
   return (
     <AuthContext.Provider

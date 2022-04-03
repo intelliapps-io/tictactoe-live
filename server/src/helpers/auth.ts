@@ -1,7 +1,8 @@
 import { sign } from "jsonwebtoken";
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 import { User, IUserModel, IUserDocument } from "../models/userModel";
+import { logger } from "./logger";
 
 export interface Req extends Request {
 userId?: string
@@ -71,6 +72,24 @@ export const authMiddleware = async (req: Req, res: Response, next: () => void) 
   if (data.userId) req.userId = data.userId;
 
   next();
+}
+
+export const withAuth = async (req: Req, res: Response, next?: NextFunction): Promise<IUserDocument> => {
+  logger.info(req.userId)
+
+  if (!req.userId) 
+    throw new Error('User not logged in')
+  
+  const user = await User.findById(req.userId)
+    .catch(error => { throw new Error('User not found in database') })
+  
+  if (!user)
+    throw new Error('User not found by ID')
+  
+  if (next)
+    next()
+  
+  return user
 }
 
 // export const authChecker: AuthChecker<MyContext, UserRole> = (

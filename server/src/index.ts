@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import { config } from './helpers/config';
 import mongoose from 'mongoose';
 import accountController from "./controllers/account"
-import { authMiddleware } from './helpers/auth';
+import { authMiddleware, withAuth } from './helpers/auth';
 
 /**
  * Connect MongoDB
@@ -37,7 +37,7 @@ wss.on('connection', function connection(ws) {
 // express config
 const app = express();
 app.use(cors({ 
-  origin: ['localhost'],
+  origin: ['localhost', 'http://localhost:19006', 'http://localhost:3000'],
   credentials: true
 }));
 app.use(cookieParser())
