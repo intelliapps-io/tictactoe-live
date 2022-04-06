@@ -105,3 +105,6 @@ dist
 
 # MacOS Temp Files
 .DS_Store
+
+#Client Expo
+.expo

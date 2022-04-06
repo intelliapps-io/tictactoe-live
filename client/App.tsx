@@ -1,32 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, } from 'react-native';
-var ws = new WebSocket('ws://host.com/path');
+import { useContext } from 'react';
+import { ThemeProvider } from 'react-native-elements';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NativeRouter, Route, Routes, useNavigate, useLocation, Navigate } from 'react-router-native';
+import LoginForm from './components/account/LoginForm';
+import SignupForm from './components/account/SignupForm';
+import { AuthContext, AuthProvider } from './helpers/context/AuthContext';
+import { WSProvider } from './helpers/context/WSContext';
+import HomePage from './pages/Home.page';
+import UnauthorizedPage from './pages/Unauthorized.page';
 
-export default function App() {
-  var ws = new WebSocket('ws://192.168.1.201:8080')
-  
-  ws.onerror = (err) => console.log(err)
+function _App() {
+  const { authState } = useContext(AuthContext)
+  const naviage = useNavigate()
+  const location = useLocation()
 
-  console.log('start');
+  const loggedIn = (authState && authState.user) ? true : false
 
-  ws.onopen = () => {
-    // connection opened
-    console.log('connected');
-
-    ws.send('something');  // send a message
-  };
+  if (location.pathname === "/" && !loggedIn)
+    return <Navigate to="/unauthorized" />
 
   return (
-    <View style={styles.container}>
-    <View style={{ flex: 1, flexDirection: 'row' }}>
-      <Text>Hello world</Text>
-    </View>
-  </View>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/signup" element={<SignupForm />} />
+    </Routes>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF',
-  },
-});
+// wapper
+export default function App() {
+
+  const theme = ({
+    Button: {
+      titleStyle: {
+        // color: 'red',
+      },
+    },
+  });
+
+  return (
+    <SafeAreaProvider>
+      <NativeRouter>
+        <AuthProvider>
+          <WSProvider>
+            <ThemeProvider theme={theme}>
+              <_App />
+            </ThemeProvider>
+          </WSProvider>
+        </AuthProvider>
+      </NativeRouter>
+    </SafeAreaProvider>
+  )
+}
