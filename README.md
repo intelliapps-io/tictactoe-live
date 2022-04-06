@@ -1,9 +1,17 @@
 # tictaktoe-live
 
-## Backend
-Start druing development
-`cd server`
+## Commands
 
-In one terminal, run `docker-compose up` to start the mongodb instance
+In terminal 1, run the following to start the server
+- `cd server`
+- `yarn install` (if node packages not installed)
+- `yarn dev` 
 
-In a second terminal, run `yarn dev` to start the node server in auto-reload mode
+In terminal 2, run the following to start the mongodb instance
+- `cd server`
+- `yarn docker` 
+
+In terminal 3, run the following to start expo react native
+- `cd client`
+- `yarn install` (if node packages not installed)
+- `yarn yarn` 
