@@ -9,6 +9,8 @@ export interface IConfig {
   ENDPOINTS_DIR: string
   SERVER_PORT: number
   MONGO_URI: string
+  REFRESH_TOKEN_SECRET: string
+  ACCESS_TOKEN_SECRET: string
 }
 
 // App config
@@ -28,4 +30,8 @@ export const config: IConfig = {
 
   // MongoDB connection string
   MONGO_URI: process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27018',
+
+  REFRESH_TOKEN_SECRET: "CHANGE_ME!",
+
+  ACCESS_TOKEN_SECRET: "CHNAGE_ME_TOO!"
 }

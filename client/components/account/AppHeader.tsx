@@ -3,9 +3,13 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { Header, Text } from 'react-native-elements';
 import { Link } from 'react-router-native';
 
-export function AppHeader() {
+interface IProps {
+  onBack?: () => void
+}
+
+export function AppHeader(props: IProps) {
   const Back = () => (
-    <Link to="/">
+    <Link to="/" onPress={props.onBack}>
       <Text>Back</Text>
     </Link>
   )

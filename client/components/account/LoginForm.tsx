@@ -3,8 +3,8 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { Button, ButtonGroup, withTheme, Text, Input } from 'react-native-elements';
 import { useNavigate } from 'react-router-native';
 import { config } from '../../helpers/config';
+import { AuthContext } from '../../helpers/context/AuthContext';
 import { AppHeader } from './AppHeader';
-import { AuthContext } from './AuthContext';
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>('jared.moore@intelliapps.io');

@@ -3,6 +3,7 @@ import { Response, Request, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 import { User, IUserModel, IUserDocument } from "../models/userModel";
 import { logger } from "./logger";
+import { config } from "./config";
 
 export interface Req extends Request {
 userId?: string
@@ -18,17 +19,14 @@ interface ITokenData {
   authCount?: number | null
 }
 
-const REFRESH_TOKEN_SECRET = "CHANGE_ME!";
-const ACCESS_TOKEN_SECRET = "CHNAGE_ME_TOO!";
-
 export const createTokens = (user: IUserDocument): { refreshToken: string , accessToken: string } => {
   const refreshToken = sign(
     { userId: user._id, authCount: user.authCount },
-    REFRESH_TOKEN_SECRET, { expiresIn: "7d" }
+    config.REFRESH_TOKEN_SECRET, { expiresIn: "7d" }
   );
   const accessToken = sign(
     { userId: user._id },
-    ACCESS_TOKEN_SECRET, { expiresIn: "15min" }
+    config.ACCESS_TOKEN_SECRET, { expiresIn: "15min" }
   );
 
   return { refreshToken, accessToken };
@@ -41,7 +39,7 @@ export const verifyRefreshToken = (refreshToken: string | null): ITokenData => {
   };
   try {
     if (!refreshToken) return data;
-    data = verify(refreshToken, REFRESH_TOKEN_SECRET) as ITokenData;
+    data = verify(refreshToken, config.REFRESH_TOKEN_SECRET) as ITokenData;
   } catch { }
   return data;
 }
@@ -53,7 +51,7 @@ export const authMiddleware = async (req: Req, res: Response, next: () => void) 
   if (!refreshToken && !accessToken) return next();
 
   try {
-    const data = verify(accessToken, ACCESS_TOKEN_SECRET) as ITokenData;
+    const data = verify(accessToken, config.ACCESS_TOKEN_SECRET) as ITokenData;
     if (data.userId) req.userId = data.userId;
     return next();
   } catch { }
@@ -75,8 +73,6 @@ export const authMiddleware = async (req: Req, res: Response, next: () => void) 
 }
 
 export const withAuth = async (req: Req, res: Response, next?: NextFunction): Promise<IUserDocument> => {
-  logger.info(req.userId)
-
   if (!req.userId) 
     throw new Error('User not logged in')
   

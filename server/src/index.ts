@@ -1,43 +1,26 @@
-import { WebSocketServer } from 'ws';
+// import { WebSocketServer } from 'ws';
 import { logger } from './helpers/logger';
+import { Server } from "socket.io";
 import express, { Request, Response, NextFunction } from "express";
+import http from "http";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
 import { config } from './helpers/config';
 import mongoose from 'mongoose';
 import accountController from "./controllers/account"
+import gameController from "./controllers/game"
+import jwt from "jsonwebtoken"
 import { authMiddleware, withAuth } from './helpers/auth';
-
-/**
- * Connect MongoDB
- */
-
-mongoose.connect(config.MONGO_URI, () => { 
-  console.log('Database connected')
-})
-
-/** 
- * Create Websocket Server
- */
-
-const wss = new WebSocketServer({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function message(data) {
-    logger.info('received: ' + data);
-  });
-
-  ws.send('something');
-});
+import { handleGameSockets } from './controllers/gameSockets';
 
 /**
  * Build Express App
  */
 
-// express config
+const cors_origin = ['localhost', 'http://localhost:19006', 'http://localhost:3000']
 const app = express();
 app.use(cors({ 
-  origin: ['localhost', 'http://localhost:19006', 'http://localhost:3000'],
+  origin: cors_origin,
   credentials: true
 }));
 app.use(cookieParser())
@@ -61,8 +44,55 @@ app.get('/', (req, res) => {
 
 // express routes
 app.use('/account', accountController)
+app.use('/game', gameController)
 
-// express start
-app.listen(config.SERVER_PORT, ()=> {
+// express http server
+const server = http.createServer(app);
+
+/**
+ * Connect MongoDB
+ */
+
+mongoose.connect(config.MONGO_URI, () => { 
+  console.log('Database connected')
+})
+
+/**
+ * Socket.IO Server
+ */ 
+
+const io = new Server(server, {
+  cors: {
+    origin: cors_origin,
+    methods: ["GET", "POST"],
+    // allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
+});
+
+// io.use(function(socket, next){
+//   if (socket.handshake.auth.sessionID){
+//     // jwt.verify(socket.handshake.query.token, 'SECRET_KEY', function(err, decoded) {
+//     //   if (err) return next(new Error('Authentication error'));
+//     //   socket.decoded = decoded;
+//     //   next();
+//     // });
+//     next()
+//   }
+//   else {
+//     next(new Error('Authentication error'));
+//   } 
+// })
+
+io.on("connection", (socket) => {
+  logger.info('connected')
+  handleGameSockets(socket)
+});
+
+/**
+ * Start Server
+ */
+
+server.listen(config.SERVER_PORT, ()=> {
   console.log('Server is running on ' + config.SERVER_PORT)
 })

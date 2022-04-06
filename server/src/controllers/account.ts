@@ -52,6 +52,7 @@ router.post('/login', async (req, res) => {
 
     res.cookie("refresh-token", tokens.refreshToken);
     res.cookie("access-token", tokens.accessToken);
+    // res.setHeader('Set-Cookie', 'flavor=choco; SameSite=None; Secure')
 
     type ResultData = Omit<Omit<IUser, "password">, "authCount">
   
@@ -100,6 +101,7 @@ router.put('/signup', async (req, res) => {
 
     res.cookie("refresh-token", tokens.refreshToken);
     res.cookie("access-token", tokens.accessToken);
+    // res.setHeader('Set-Cookie', 'flavor=choco; SameSite=None; Secure')
 
     type ResultData = Omit<Omit<IUser, "password">, "authCount">
   
@@ -119,6 +121,7 @@ router.put('/signup', async (req, res) => {
       },
       user: userData
     })
+
     // res.status(200).send({
     //   status: 200,
     //   message: 'Successfully Registered',

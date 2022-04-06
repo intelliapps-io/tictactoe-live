@@ -1,19 +1,27 @@
 import { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { AppHeader } from '../components/account/AppHeader';
 import { MeComponent } from '../components/account/Me';
+import { Gameboard } from '../components/game/Gameboard';
 import { GameStartMenu } from '../components/game/GameStartMenu';
 import { AuthContext } from '../helpers/context/AuthContext';
+import { WSContext } from '../helpers/context/WSContext';
 
-export default function HomePage() {
+export default function GamePage() {
   const authContext = useContext(AuthContext);
+  const { socket } = useContext(WSContext)
 
   const loggedIn = (authContext && authContext.authState && authContext.authState.user) ? true : false
 
+  const exitGame = () => {
+    // socket.emit()
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
+      <AppHeader />
       <View style={styles.container}>
-        <GameStartMenu />
-        <MeComponent />
+        <Gameboard />
       </View>
     </ScrollView>
   );

@@ -1,27 +1,19 @@
 import react, { useContext, useState } from 'react';
 import { ScrollView, ScrollViewBase, StyleSheet, View, } from 'react-native';
 import { Button, Text } from 'react-native-elements';
-import { Link, useNavigate } from 'react-router-native';
-import { AuthContext } from '../components/account/AuthContext';
+import { Link, Navigate, useNavigate } from 'react-router-native';
 import LoginForm from '../components/account/LoginForm';
 import { MeComponent } from '../components/account/Me';
+import { AuthContext } from '../helpers/context/AuthContext';
 
 export default function UnauthorizedPage() {
   const authContext = useContext(AuthContext);
-  const [status, setStatus] = useState('loading');
   const navigate = useNavigate()
-
-  const theme = ({
-    Button: {
-      titleStyle: {
-        // color: 'red',
-      },
-    },
-  });
 
   const loggedIn = (authContext && authContext.authState && authContext.authState.user) ? true : false
 
-  // authContext.authState.authenticated
+  if (loggedIn)
+    return <Navigate to="/"/>    
 
   return (
     <View style={styles.contentView}>

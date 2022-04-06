@@ -29,9 +29,6 @@ export interface IAuthContext {
 const AuthContext = createContext<IAuthContext>(null as any);
 
 const AuthProvider = ({ children }: { children: any }) => {
-
-  const naviage = useNavigate()
-
   const [authState, setAuthState] = useState<IAuthState>({
     accessToken: null,
     refreshToken: null,
