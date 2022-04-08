@@ -1,33 +1,37 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Button, Card, Input, Text } from 'react-native-elements';
-import { Link } from 'react-router-native';
-import { AuthContext, IAuthState } from '../../helpers/context/AuthContext';
-import { ISocket, WSContext } from '../../helpers/context/WSContext';
+import { useNavigate } from 'react-router-native';
+import { WSContext } from '../../helpers/context/WSContext';
+import { IGameSession, IRequestJoinExistingGame } from '../../helpers/types';
 
 export function GameStartMenu() {
   const [gameCode, setGameCode] = useState<string>('')
   const [gameCodeError, setGameCodeError] = useState<string>('');
-  const { socket } = useContext(WSContext)
-  const { authState } = useContext(AuthContext)
+  const { socket, setGameSession, setGameOpponent } = useContext(WSContext)
+  const navigate = useNavigate()
 
   const newGame = () => {
-    interface IReqNewGameData {
-      userID: string
-    }
-    interface IResNewGameData {
-      gameID: string
-    }
-    const message: IReqNewGameData = {
-      userID: authState.user!._id
-    }
-  
-    socket.emit("request_start_new_game", message);
+    socket.emit("request_start_new_game", {}, (response: IGameSession) => {
+      setGameSession(null)
+      if (response.gameID) {
+        setGameSession(response)
+        setGameOpponent(null)
+        navigate('/game')
+      }
+    });
   }
 
-  socket.on("response_start_new_game", (res) => {
-    console.log(res)
-  });
+  const joinGame = () => {
+    const payload: IRequestJoinExistingGame = { gameID: gameCode }
+    console.log(payload)
+    socket.emit("request_join_existing_game", payload, (response: IGameSession) => {
+      if (response.gameID) {
+        setGameSession(response)
+        navigate('/game')
+      }
+    });
+  }
 
   return (
     <Card>
@@ -83,7 +87,7 @@ export function GameStartMenu() {
               width: 200,
               marginVertical: 10,
             }}
-            onPress={() => { }}
+            onPress={() => joinGame()}
           />
         </View>
       </View>

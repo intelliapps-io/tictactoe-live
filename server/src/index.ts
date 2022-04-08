@@ -1,6 +1,6 @@
 // import { WebSocketServer } from 'ws';
 import { logger } from './helpers/logger';
-import { Server } from "socket.io";
+import sio, { Server } from "socket.io";
 import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
@@ -9,8 +9,7 @@ import { config } from './helpers/config';
 import mongoose from 'mongoose';
 import accountController from "./controllers/account"
 import gameController from "./controllers/game"
-import jwt from "jsonwebtoken"
-import { authMiddleware, withAuth } from './helpers/auth';
+import { authMiddleware, parseCookies, verifySocketCookies } from './helpers/auth';
 import { handleGameSockets } from './controllers/gameSockets';
 
 /**
@@ -38,11 +37,10 @@ app.use(authMiddleware);
 //   });
 // });
 
+// express routes
 app.get('/', (req, res) => {
   res.send('Backend running on port 3000')
 })
-
-// express routes
 app.use('/account', accountController)
 app.use('/game', gameController)
 
@@ -70,22 +68,32 @@ const io = new Server(server, {
   }
 });
 
-// io.use(function(socket, next){
-//   if (socket.handshake.auth.sessionID){
-//     // jwt.verify(socket.handshake.query.token, 'SECRET_KEY', function(err, decoded) {
-//     //   if (err) return next(new Error('Authentication error'));
-//     //   socket.decoded = decoded;
-//     //   next();
-//     // });
+// io.use(function (socket, next) {
+//   const { authenticated, userID } = verifySocketCookies(socket.handshake.headers.cookie)
+//   if (authenticated) {
+//     socket.handshake.auth.userID = userID;
 //     next()
 //   }
 //   else {
-//     next(new Error('Authentication error'));
-//   } 
+//     logger.info(socket.handshake.headers.cookie)
+//     logger.info('Socket not authenticated, blocked')
+//     next(new Error('Authentication error'))
+//   }
 // })
 
+io.use((socket, next) => {
+  const userID = socket.handshake.auth.userID;
+  if (!userID) {
+    logger.info('NO USER ID')
+    return next(new Error("invalid username"));
+  }
+  next();
+});
+
 io.on("connection", (socket) => {
-  logger.info('connected')
+  // join room
+  socket.join(socket.handshake.auth.userID)
+
   handleGameSockets(socket)
 });
 

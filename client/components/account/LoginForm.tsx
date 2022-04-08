@@ -7,14 +7,14 @@ import { AuthContext } from '../../helpers/context/AuthContext';
 import { AppHeader } from './AppHeader';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState<string>('jared.moore@intelliapps.io');
-  const [password, setPassword] = useState<string>('intelliapps');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [errMessage, setErrMessage] = useState<string | null>('')
   const { axios, setAuthState } = useContext(AuthContext);
   const nav = useNavigate()
 
-  const handleLogin = () => {
-    axios.post('/account/login', { email, password }, {
+  const handleLogin = (_email?: string, _password?: string) => {
+    axios.post('/account/login', { email: _email ? _email : email, password: _password ? _password : password}, {
       withCredentials: true,
       headers: {
         'Access-Control-Allow-Origin': config.BASE_SERVER_URL,
@@ -41,6 +41,26 @@ export default function LoginForm() {
         <View style={styles.contentView}>
           <Text style={styles.subHeader}>Login</Text>
           <View style={styles.buttonsContainer}>
+            <Button
+              title="Bob"
+              titleStyle={{ fontSize: 16 }}
+              containerStyle={{ marginRight: 20 }}
+              onPress={() => {
+                setEmail('bob@bob.bob')
+                setPassword('bob')
+                handleLogin('bob@bob.bob', 'bob')
+              }}
+            />
+            <Button
+              title="Jill"
+              titleStyle={{ fontSize: 16 }}
+              onPress={() => {
+                setEmail('jill@jill.jill')
+                setPassword('jill')
+                handleLogin('jill@jill.jill', 'jill')
+              }}
+            />
+
             <Input value={email} onChangeText={val => setEmail(val)} placeholder='Email' />
             <Input placeholder="Password" secureTextEntry={true} value={password} onChangeText={val => setPassword(val)} />
             <Text style={{ color: 'red', flexDirection: 'row' }}>{errMessage}</Text>
@@ -59,7 +79,7 @@ export default function LoginForm() {
                 width: 200,
                 marginVertical: 10,
               }}
-              onPress={handleLogin}
+              onPress={() => handleLogin()}
             />
           </View>
         </View>
