@@ -14,16 +14,19 @@ export default function GamePage() {
   const loggedIn = (authContext && authContext.authState && authContext.authState.user) ? true : false
 
   const exitGame = () => {
-    // socket.emit()
+    socket.emit('request_exit_game')
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollView}>
-      <AppHeader />
-      <View style={styles.container}>
-        <Gameboard />
-      </View>
-    </ScrollView>
+    <>
+      <AppHeader onBack={exitGame}/>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+
+        <View style={styles.container}>
+          <Gameboard />
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
