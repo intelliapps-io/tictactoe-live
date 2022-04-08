@@ -1,18 +1,21 @@
 import { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { MeComponent } from '../components/account/Me';
+import { GameboardCell } from '../components/game/GameboardCell';
 import { GameStartMenu } from '../components/game/GameStartMenu';
 import { AuthContext } from '../helpers/context/AuthContext';
 
 export default function HomePage() {
   const authContext = useContext(AuthContext);
 
-  const loggedIn = (authContext && authContext.authState && authContext.authState.user) ? true : false
-
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <View style={styles.container}>
         <GameStartMenu />
+        {/* <GameboardCell
+          state={'O'}
+          onPress={() => {}}
+        /> */}
         <MeComponent />
       </View>
     </ScrollView>

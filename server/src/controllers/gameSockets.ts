@@ -1,13 +1,29 @@
 import { Socket } from "socket.io";
 import { logger } from "../helpers/logger";
-import { IUser, User } from "../models/userModel";
+import { User } from "../models/userModel";
 
 //https://socket.io/get-started/private-messaging-part-2/
+
+type BoardCellState = 'X' | 'O' | null
 
 interface IGameSession {
   gameID: string
   user1ID: string
   user2ID: string | null
+  board: [
+    [BoardCellState, BoardCellState, BoardCellState],
+    [BoardCellState , BoardCellState, BoardCellState],
+    [BoardCellState , BoardCellState, BoardCellState]
+  ]
+  playerTurnID: string
+  player1Symbol: 'X' | 'O'
+  player2Symbol: 'X' | 'O'
+}
+
+interface IRequestGameMove {
+  gameID: string
+  cellRow: number
+  cellCol: number
 }
 
 interface IPlayerInfo {
@@ -48,21 +64,28 @@ const gameSessions = new InMemorySessionStore()
 export function handleGameSockets(socket: Socket) {
   const userID = socket.handshake.auth.userID
 
+  /**
+   * Start New Game
+   * 
+   * 
+   */
   socket.on("request_start_new_game", (payload: any, callback: (res: IGameSession) => void) => {
-    socket.join(userID)
-    
     const gameID = `${Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000}`
     gameSessions.saveSession(gameID, {
       gameID,
       user1ID: userID,
-      user2ID: null
+      user2ID: null,
+      board: [[null, null, null], [null, null, null], [null, null, null]],
+      playerTurnID: userID,
+      player1Symbol: 'X',
+      player2Symbol: 'O'
     })
 
     // leave other game rooms
-    socket.rooms.forEach((room) => {
-      if (room.length === 6)
-        socket.leave(room)
-    })
+    // socket.rooms.forEach((room) => {
+    //   if (room.length === 6)
+    //     socket.leave(room)
+    // })
 
     // join game room
     socket.join(gameID)
@@ -72,8 +95,12 @@ export function handleGameSockets(socket: Socket) {
     } catch (err) { }
   })
 
+  /**
+   * Join Game
+   * 
+   * 
+   */
   socket.on("request_join_existing_game", async (payload: IRequestJoinExistingGame, callback: (res: IGameSession) => void) => {
-    socket.join(userID)
     let session = gameSessions.findGame(payload.gameID)
 
     if (!session)
@@ -105,14 +132,6 @@ export function handleGameSockets(socket: Socket) {
 
     const user1 = await User.findById(session.user1ID)
     const user2 = await User.findById(session.user2ID)
-    const player1Info: IPlayerInfo = {
-      isSymbolX: true,
-      isTurn: true
-    };
-    const player2Info: IPlayerInfo = {
-      isSymbolX: false,
-      isTurn: false
-    };
 
     // send user1 opponent data
     if (user2) {
@@ -124,13 +143,11 @@ export function handleGameSockets(socket: Socket) {
         totalGames: user2.totalGames,
         totalWins: user2.totalWins
       })
-      socket.to(session.user1ID).emit("response_player_info", player1Info)
     }
 
-    
     // send user2 opponent data
-    if (user1 && session.user2ID) {
-      socket.to(session.user2ID).emit("response_set_opponent", {
+    if (user1) {
+      socket.emit("response_set_opponent", {
         _id: user1._id,
         email: user1.email,
         firstName: user1.firstName,
@@ -138,22 +155,68 @@ export function handleGameSockets(socket: Socket) {
         totalGames: user1.totalGames,
         totalWins: user1.totalWins
       })
-      socket.to(session.user2ID).emit("response_player_info", player2Info)
     }
-    
-    
   })
 
-  // socket.on("request_exit_game", (gameID: string, callback: () => void) => {
-  //   let session = gameSessions.findGame(gameID)
+  /**
+   * Game Move
+   * 
+   * 
+   */
+  socket.on("request_game_move", (payload: IRequestGameMove) => {
+    let session = gameSessions.findGame(payload.gameID)
 
-  //   if (!session)
-  //     return logger.info("Error, game session not found")
+    if (!session)
+      return logger.info("Error, game session not found")
     
-  //   gameSessions.removeSession(gameID)
+    if (!(payload.cellCol <= 3 && payload.cellCol >= 0 && payload.cellRow >=0 && payload.cellRow <= 3))
+      return logger.info("Error, cell refrence error")
+    
+    const cellState = session.board[payload.cellRow][payload.cellCol]
+      
+    if (cellState !== null)
+      return logger.info("Error, cell already played")
+    
+    // get user symbol
+    let symbol: 'X' | 'O' = 'O'
+    if (session.playerTurnID === session.user1ID)
+      symbol = session.player1Symbol
+    else
+      symbol = session.player2Symbol
+    
+    // update cell
+    session.board[payload.cellRow][payload.cellCol] = symbol
 
-  //   socket.leave(gameID)
+    // swap player turn
+    if (session.playerTurnID === session.user1ID)
+      session.playerTurnID = session.user2ID!
+    else
+      session.playerTurnID = session.user1ID
+    
+    // update game
+    gameSessions.saveSession(payload.gameID, session)
 
-  //   callback()
-  // })
+    // send game data
+    socket.broadcast.to(session.gameID).emit("gamesession_updated", session)
+    socket.emit("gamesession_updated", session)
+  })
+
+  /**
+   * Exit Game
+   * 
+   * 
+   */
+  socket.on("request_exit_game", (gameID: string, callback: () => void) => {
+    let session = gameSessions.findGame(gameID)
+
+    if (!session)
+      return logger.info("Error, game session not found")
+    
+    socket.broadcast.to(session.gameID).emit("response_exit_game", '')
+    socket.emit("response_exit_game", '')
+    
+    gameSessions.removeSession(gameID)
+
+    socket.leave(gameID)
+  })
 }

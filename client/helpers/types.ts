@@ -1,7 +1,17 @@
+export type IBoardCellState = 'X' | 'O' | null
+
 export interface IGameSession {
   gameID: string
   user1ID: string
   user2ID: string | null
+  board: [
+    [IBoardCellState, IBoardCellState, IBoardCellState],
+    [IBoardCellState , IBoardCellState, IBoardCellState],
+    [IBoardCellState , IBoardCellState, IBoardCellState]
+  ]
+  playerTurnID: string
+  player1Symbol: 'X' | 'O'
+  player2Symbol: 'X' | 'O'
 }
 
 export interface IRequestJoinExistingGame {
@@ -18,6 +28,12 @@ export interface IUser {
 }
 
 export interface IPlayerInfo {
-  isSymbolX: boolean
+  symbol: 'X' | 'O'
   isTurn: boolean
+}
+
+export interface IRequestGameMove {
+  gameID: string
+  cellRow: number
+  cellCol: number
 }

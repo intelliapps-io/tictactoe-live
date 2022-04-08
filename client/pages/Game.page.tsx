@@ -9,19 +9,19 @@ import { WSContext } from '../helpers/context/WSContext';
 
 export default function GamePage() {
   const authContext = useContext(AuthContext);
-  const { socket } = useContext(WSContext)
+  const { socket, gameSession } = useContext(WSContext)
 
   const loggedIn = (authContext && authContext.authState && authContext.authState.user) ? true : false
 
   const exitGame = () => {
-    socket.emit('request_exit_game')
+    if (gameSession)
+      socket.emit('request_exit_game', gameSession.gameID)
   }
 
   return (
     <>
-      <AppHeader onBack={exitGame}/>
+      <AppHeader onBack={exitGame} />
       <ScrollView contentContainerStyle={styles.scrollView}>
-
         <View style={styles.container}>
           <Gameboard />
         </View>
