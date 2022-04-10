@@ -1,4 +1,4 @@
-# tictaktoe-live
+# tictactoe-live
 
 ## Commands
 
