@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { calcGameWin } from "../helpers/calcGameWin";
 import { logger } from "../helpers/logger";
 import { User } from "../models/userModel";
 
@@ -6,7 +7,14 @@ import { User } from "../models/userModel";
 
 type BoardCellState = 'X' | 'O' | null
 
-interface IGameSession {
+export interface IWinResult {
+  winCells: number[][]
+  winSymbol: "X" | "O"
+  winnerID: string
+  isTie: boolean
+}
+
+export interface IGameSession {
   gameID: string
   user1ID: string
   user2ID: string | null
@@ -18,6 +26,7 @@ interface IGameSession {
   playerTurnID: string
   player1Symbol: 'X' | 'O'
   player2Symbol: 'X' | 'O'
+  win: IWinResult | null
 }
 
 interface IRequestGameMove {
@@ -78,7 +87,8 @@ export function handleGameSockets(socket: Socket) {
       board: [[null, null, null], [null, null, null], [null, null, null]],
       playerTurnID: userID,
       player1Symbol: 'X',
-      player2Symbol: 'O'
+      player2Symbol: 'O',
+      win: null
     })
 
     // leave other game rooms
@@ -193,6 +203,9 @@ export function handleGameSockets(socket: Socket) {
     else
       session.playerTurnID = session.user1ID
     
+    // set win status
+    session.win = calcGameWin(session)
+
     // update game
     gameSessions.saveSession(payload.gameID, session)
 

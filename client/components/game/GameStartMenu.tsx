@@ -1,15 +1,24 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Button, Card, Input, Text } from 'react-native-elements';
+import { Button, Card, Input } from 'react-native-elements';
 import { useNavigate } from 'react-router-native';
 import { WSContext } from '../../helpers/context/WSContext';
 import { IGameSession, IRequestJoinExistingGame } from '../../helpers/types';
 
-export function GameStartMenu() {
+interface IGameStartMenu {
+  startJoinGame?: boolean
+}
+
+export function GameStartMenu(props: IGameStartMenu) {
   const [gameCode, setGameCode] = useState<string>('')
   const [gameCodeError, setGameCodeError] = useState<string>('');
   const { socket, setGameSession, setGameOpponent } = useContext(WSContext)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (props.startJoinGame)
+      newGame()
+  }, [props.startJoinGame])
 
   const newGame = () => {
     socket.emit("request_start_new_game", {}, (response: IGameSession) => {
@@ -36,7 +45,7 @@ export function GameStartMenu() {
   return (
     <Card>
       <Card.Title style={styles.title}>
-        TikTakToe Live
+        TikTacToe Live
       </Card.Title>
       <Card.Divider />
       <View style={styles.infoRow}>

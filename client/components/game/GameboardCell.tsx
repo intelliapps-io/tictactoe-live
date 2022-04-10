@@ -6,6 +6,7 @@ interface IGameboardCellProps {
   state: null | 'O' | 'X'
   onPress: () => void
   disabled?: boolean
+  isWinCell: boolean
 }
 
 export function GameboardCell(props: IGameboardCellProps) {
@@ -16,9 +17,12 @@ export function GameboardCell(props: IGameboardCellProps) {
           <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{props.state === null ? ' ' : props.state}</Text>
         </View>
       }
+      buttonStyle={{
+        backgroundColor: props.isWinCell ? 'red' : 'rgb(32, 137, 220)',
+      }}
       containerStyle={styles.containerStyle}
-      disabled={props.disabled}
-      onPress={props.onPress}
+      disabled={props.disabled && !props.isWinCell}
+      onPress={props.isWinCell ? undefined : props.onPress}
     />
   )
 }
