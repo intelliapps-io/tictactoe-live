@@ -1,13 +1,6 @@
-import { IGameSession } from "./types"
+import { IGameSession, IWinResult } from "../controllers/gameSockets"
 
-export interface IWinResult {
-  winCells: number[][]
-  winSymbol: "X" | "O"
-  winnerID: string
-  isTie: boolean
-}
-
-export function calcWin(session: IGameSession): IWinResult | null {
+export function calcGameWin(session: IGameSession): IWinResult | null {
   const { board } = session
 
   let result: IWinResult = {
@@ -47,6 +40,16 @@ export function calcWin(session: IGameSession): IWinResult | null {
     result.winnerID = session.user1ID
   else
     result.winnerID = session.user2ID!
-
+  
+  // find tie
+  let noCellLeft = true
+  for (let i = 0; i < board.length; i++) 
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] === null) noCellLeft = false
+      break
+    }
+  
+  result.isTie = noCellLeft
+  
   return result.winCells.length === 0 ? null : result
 }

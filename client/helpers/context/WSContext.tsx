@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-native";
 import { io, Socket } from "socket.io-client";
 import { config } from "../../helpers/config";
-import { IGameSession, IPlayerInfo, IUser } from "../types";
+import { IGameSession, IPlayerInfo, IUser, IWinResult } from "../types";
 import { AuthContext } from "./AuthContext";
 
 interface DefaultEventsMap {

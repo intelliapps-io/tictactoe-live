@@ -1,5 +1,12 @@
 export type IBoardCellState = 'X' | 'O' | null
 
+export interface IWinResult {
+  winCells: number[][]
+  winSymbol: "X" | "O"
+  winnerID: string
+  isTie: boolean
+}
+
 export interface IGameSession {
   gameID: string
   user1ID: string
@@ -12,6 +19,7 @@ export interface IGameSession {
   playerTurnID: string
   player1Symbol: 'X' | 'O'
   player2Symbol: 'X' | 'O'
+  win: IWinResult | null
 }
 
 export interface IRequestJoinExistingGame {
