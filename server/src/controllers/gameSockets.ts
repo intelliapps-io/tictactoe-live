@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 import { calcGameWin } from "../helpers/calcGameWin";
 import { logger } from "../helpers/logger";
 import { User } from "../models/userModel";
+import mongoose from 'mongoose';
 
 //https://socket.io/get-started/private-messaging-part-2/
 
@@ -143,6 +144,8 @@ export function handleGameSockets(socket: Socket) {
     const user1 = await User.findById(session.user1ID)
     const user2 = await User.findById(session.user2ID)
 
+   
+
     // send user1 opponent data
     if (user2) {
       socket.to(session.user1ID).emit("response_set_opponent", {
@@ -173,7 +176,7 @@ export function handleGameSockets(socket: Socket) {
    * 
    * 
    */
-  socket.on("request_game_move", (payload: IRequestGameMove) => {
+  socket.on("request_game_move", async (payload: IRequestGameMove) => {
     let session = gameSessions.findGame(payload.gameID)
 
     if (!session)
@@ -197,6 +200,10 @@ export function handleGameSockets(socket: Socket) {
     // update cell
     session.board[payload.cellRow][payload.cellCol] = symbol
 
+    
+    
+    
+    
     // swap player turn
     if (session.playerTurnID === session.user1ID)
       session.playerTurnID = session.user2ID!
@@ -205,6 +212,37 @@ export function handleGameSockets(socket: Socket) {
     
     // set win status
     session.win = calcGameWin(session)
+
+    // update total wins & games
+    let user1Record = await User.findById(session.user1ID)
+    let user2Record = await User.findById(session.user2ID)
+
+    if (user1Record == null) console.log(" User 1 record is null");
+
+    if (user2Record == null) console.log(" User 2 record is null");
+
+    if(user1Record != null && user2Record != null && session.win?.winnerID === session.user1ID){
+      console.log("player 1 should increment total wins")
+      user1Record.totalWins ++;
+      user1Record.totalGames ++;
+      user2Record.totalGames++;
+      user1Record.save();
+      user2Record.save();
+    }
+
+    if(user1Record != null && user2Record != null && session.win?.winnerID === session.user2ID){
+      console.log("player 2 should increment total wins")
+      user2Record.totalWins ++;
+      user1Record.totalGames ++;
+      user2Record.totalGames++;
+      user1Record.save();
+      user2Record.save();
+    }
+
+    
+
+    
+    
 
     // update game
     gameSessions.saveSession(payload.gameID, session)
