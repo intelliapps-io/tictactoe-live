@@ -1,0 +1,20 @@
+{
+  "name": "tictaktoe-live",
+  "version": "1.0.0",
+  "description": "## Commands",
+  "main": "index.js",
+  "scripts": {
+    "heroku-prebuild": "cd server && npm i",
+    "start": "cd server && yarn dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intelliapps-io/tictaktoe-live.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/intelliapps-io/tictaktoe-live/issues"
+  },
+  "homepage": "https://github.com/intelliapps-io/tictaktoe-live#readme"
+}
