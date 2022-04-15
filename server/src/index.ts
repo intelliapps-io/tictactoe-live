@@ -1,6 +1,7 @@
 // import { WebSocketServer } from 'ws';
 import { logger } from './helpers/logger';
-import sio, { Server } from "socket.io";
+import { Server } from "socket.io";
+import { join } from 'path'
 import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
@@ -38,11 +39,21 @@ app.use(authMiddleware);
 // });
 
 // express routes
-app.get('/', (req, res) => {
-  res.send('Backend running on port 3000')
-})
+// app.get('/', (req, res) => {
+//   res.send('Backend running on port 3000')
+// })
 app.use('/account', accountController)
 app.use('/game', gameController)
+
+// Production Send Files
+if (true) {
+  const buildFolder = join(__dirname, "../", "../", "client", "web-build");
+  const indexHtml = join(buildFolder, "index.html");
+  app.use("/", express.static(buildFolder))
+  app.get('/', (req, res, next) => {
+    res.sendFile(indexHtml);
+  })
+}
 
 // express http server
 const server = http.createServer(app);
@@ -101,6 +112,6 @@ io.on("connection", (socket) => {
  * Start Server
  */
 
-server.listen(config.SERVER_PORT, ()=> {
-  console.log('Server is running on ' + config.SERVER_PORT)
+server.listen(config.PORT, ()=> {
+  console.log('Server is running on ' + config.PORT)
 })

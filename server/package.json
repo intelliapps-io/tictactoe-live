@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx ts-node-dev ./src/index.ts",
+    "start": "npx ts-node ./src/index.ts",
     "docker": "docker compose up"
   },
   "dependencies": {
