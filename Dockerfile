@@ -24,4 +24,4 @@ RUN chown -R node:node .
 USER node
 
 ENV NODE_ENV=production
-CMD [ "yarn", "_start" ]
+CMD [ "yarn", "start" ]
