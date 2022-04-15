@@ -4,7 +4,7 @@
   "description": "## Commands",
   "main": "index.js",
   "scripts": {
-    "heroku-prebuild": "cd server && yarn && cd .. && cd client && yarn && npm run build-web",
+    "heroku-prebuild": "cd server && npm i yarn && npx yarn && cd .. && cd client && npm i yarn && npx yarn && npm run build-web",
     "start": "cd server && yarn start"
   },
   "repository": {
