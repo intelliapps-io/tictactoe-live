@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/intelliapps-io/tictaktoe-live/issues"
   },
-  "homepage": "https://github.com/intelliapps-io/tictaktoe-live#readme"
+  "homepage": "https://github.com/intelliapps-io/tictaktoe-live#readme",
+  "engines": {
+    "node": "16.x"
+  }
 }
