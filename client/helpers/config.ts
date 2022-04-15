@@ -13,16 +13,18 @@ interface IConfig {
 //   WEBSOCKET_SERVER_URL: 'ws://192.168.1.201:3000'  
 // }
 
+const domain = 'https://tiktactoe-live.herokuapp.com'
+
 //For in browser
 let config: IConfig = {
-  BASE_SERVER_URL: 'http://localhost:3000',
-  WEBSOCKET_SERVER_URL: 'ws://localhost:3000'
+  BASE_SERVER_URL: domain,
+  WEBSOCKET_SERVER_URL: domain
 }
 
-if (window.location.href.indexOf('heroku') > -1) {
+if (window.location.href.indexOf('localhost') > -1) {
   config = {
-    BASE_SERVER_URL: window.location.host,
-    WEBSOCKET_SERVER_URL: window.location.host
+    BASE_SERVER_URL: 'http://localhost:3000',
+    WEBSOCKET_SERVER_URL: 'http://localhost:3000'
   }
 }
 
