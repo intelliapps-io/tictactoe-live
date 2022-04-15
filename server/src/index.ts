@@ -17,7 +17,7 @@ import { handleGameSockets } from './controllers/gameSockets';
  * Build Express App
  */
 
-const cors_origin = ['localhost', 'http://localhost:19006', 'http://localhost:3000']
+const cors_origin = config.NODE_ENV === 'production' ? [config.HOST_BASE_URL] : ['localhost', 'http://localhost:19006', 'http://localhost:3000'] 
 const app = express();
 app.use(cors({ 
   origin: cors_origin,

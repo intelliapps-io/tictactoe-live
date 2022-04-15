@@ -11,6 +11,7 @@ export interface IConfig {
   MONGO_URI: string
   REFRESH_TOKEN_SECRET: string
   ACCESS_TOKEN_SECRET: string
+  NODE_ENV: 'production' | 'development'
 }
 
 // App config
@@ -30,6 +31,9 @@ export const config: IConfig = {
 
   // MongoDB connection string
   MONGO_URI: process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27018',
+
+  // node env
+  NODE_ENV: process.env.NODE_ENV ? 'production' : 'development',
 
   REFRESH_TOKEN_SECRET: "CHANGE_ME!",
 

@@ -14,7 +14,17 @@ interface IConfig {
 // }
 
 //For in browser
-export const config: IConfig = {
+let config: IConfig = {
   BASE_SERVER_URL: 'http://localhost:3000',
   WEBSOCKET_SERVER_URL: 'ws://localhost:3000'
 }
+
+if (window.location.href.indexOf('heroku') > -1) {
+  config = {
+    BASE_SERVER_URL: window.location.host,
+    WEBSOCKET_SERVER_URL: window.location.host
+  }
+}
+
+export { config }
+
