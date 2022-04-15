@@ -1,0 +1,11 @@
+# These are downloaded based on package.json files.
+node_modules
+
+# Ignore all environment files.
+# They may have secrets and are system specific.
+# They should not be copied into an image.
+.env*
+
+docker*
+Docker*
+.gitlab-ci.yml
