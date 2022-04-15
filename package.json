@@ -4,7 +4,7 @@
   "description": "## Commands",
   "main": "index.js",
   "scripts": {
-    "heroku-prebuild": "cd server && npm i yarn && npx yarn && cd .. && cd client && npm i yarn && npx yarn",
+    "heroku-prebuild": "cd server && yarn && cd .. && cd client && yarn",
     "build": "cd client && npm run build-web",
     "start": "cd server && npm start"
   },
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/intelliapps-io/tictaktoe-live#readme",
   "engines": {
-    "node": "16.x"
+    "node": "16.x",
+    "yarn": "1.22.17"
   }
 }
