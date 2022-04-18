@@ -6,7 +6,8 @@
   "scripts": {
     "_heroku-prebuild": "cd server && yarn install && cd .. && cd client && yarn install",
     "_build": "cd client && npm run build-web",
-    "start": "cd server && npm start"
+    "start": "cd server && npm start",
+    "deploy": "sh ./bin/build.sh"
   },
   "repository": {
     "type": "git",
