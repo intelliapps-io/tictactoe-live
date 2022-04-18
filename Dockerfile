@@ -19,6 +19,9 @@ RUN yarn
 
 RUN expo build:web
 
+# clean build
+RUN npm remove -g expo-cli
+
 # Best practice: Don't run as root. Instead run as node (created in node image)
 WORKDIR /home/node/app
 RUN chown -R node:node .
