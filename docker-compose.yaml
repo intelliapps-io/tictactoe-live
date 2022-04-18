@@ -1,0 +1,24 @@
+version: "3.3"
+services:
+
+  backend:
+    build: .
+    image: tiktactoe
+    ports:
+      - 10000:10000
+    environment:
+      BASE_URL: http://localhost:10000
+      MONGO_URI: mongodb://backend-database
+      PORT: 10000
+    depends_on:
+      - backend-database
+    networks:
+      - backend-network
+
+  backend-database:
+    image: mongo:4
+    networks:
+      - backend-network
+
+networks:
+  backend-network:  

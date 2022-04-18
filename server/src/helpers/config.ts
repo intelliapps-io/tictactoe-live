@@ -7,10 +7,11 @@ export interface IConfig {
   ROOT_DIR: string
   HOST_BASE_URL: string
   ENDPOINTS_DIR: string
-  SERVER_PORT: number
+  PORT: number
   MONGO_URI: string
   REFRESH_TOKEN_SECRET: string
   ACCESS_TOKEN_SECRET: string
+  NODE_ENV: 'production' | 'development'
 }
 
 // App config
@@ -23,13 +24,16 @@ export const config: IConfig = {
   HOST_BASE_URL: process.env.HOST_BASE_URL ? process.env.HOST_BASE_URL : "localhost",
 
   // The port the server listens on.
-  SERVER_PORT: process.env.SERVER_PORT ? Number.parseInt(process.env.SERVER_PORT) : 3000,
+  PORT: process.env.PORT ? Number.parseInt(process.env.PORT) : 3000,
 
   // Express routes
   ENDPOINTS_DIR: path.join(ROOT_DIR, "src", "endpoints"),
 
   // MongoDB connection string
   MONGO_URI: process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27018',
+
+  // node env
+  NODE_ENV: process.env.NODE_ENV ? 'production' : 'development',
 
   REFRESH_TOKEN_SECRET: "CHANGE_ME!",
 

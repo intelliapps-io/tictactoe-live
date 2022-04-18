@@ -1,0 +1,26 @@
+{
+  "name": "tictaktoe-live",
+  "version": "1.0.0",
+  "description": "## Commands",
+  "main": "index.js",
+  "scripts": {
+    "_heroku-prebuild": "cd server && yarn install && cd .. && cd client && yarn install",
+    "_build": "cd client && npm run build-web",
+    "start": "cd server && npm start",
+    "deploy": "sh ./bin/build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intelliapps-io/tictaktoe-live.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/intelliapps-io/tictaktoe-live/issues"
+  },
+  "homepage": "https://github.com/intelliapps-io/tictaktoe-live#readme",
+  "engines": {
+    "node": "16.x",
+    "yarn": "1.x"
+  }
+}
