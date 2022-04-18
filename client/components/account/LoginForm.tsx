@@ -41,26 +41,6 @@ export default function LoginForm() {
         <View style={styles.contentView}>
           <Text style={styles.subHeader}>Login</Text>
           <View style={styles.buttonsContainer}>
-            <Button
-              title="Bob"
-              titleStyle={{ fontSize: 16 }}
-              containerStyle={{ marginRight: 20 }}
-              onPress={() => {
-                setEmail('bob@bob.bob')
-                setPassword('bob')
-                handleLogin('bob@bob.bob', 'bob')
-              }}
-            />
-            <Button
-              title="Jill"
-              titleStyle={{ fontSize: 16 }}
-              onPress={() => {
-                setEmail('jill@jill.jill')
-                setPassword('jill')
-                handleLogin('jill@jill.jill', 'jill')
-              }}
-            />
-
             <Input value={email} onChangeText={val => setEmail(val)} placeholder='Email' />
             <Input placeholder="Password" secureTextEntry={true} value={password} onChangeText={val => setPassword(val)} />
             <Text style={{ color: 'red', flexDirection: 'row' }}>{errMessage}</Text>
