@@ -217,12 +217,8 @@ export function handleGameSockets(socket: Socket) {
     let user1Record = await User.findById(session.user1ID)
     let user2Record = await User.findById(session.user2ID)
 
-    if (user1Record == null) console.log(" User 1 record is null");
-
-    if (user2Record == null) console.log(" User 2 record is null");
-
+   
     if(user1Record != null && user2Record != null && session.win?.winnerID === session.user1ID){
-      console.log("player 1 should increment total wins")
       user1Record.totalWins ++;
       user1Record.totalGames ++;
       user2Record.totalGames++;
@@ -231,7 +227,6 @@ export function handleGameSockets(socket: Socket) {
     }
 
     if(user1Record != null && user2Record != null && session.win?.winnerID === session.user2ID){
-      console.log("player 2 should increment total wins")
       user2Record.totalWins ++;
       user1Record.totalGames ++;
       user2Record.totalGames++;
