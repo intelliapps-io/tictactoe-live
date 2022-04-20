@@ -4,7 +4,6 @@ import { Text } from "react-native-elements"
 import { AuthContext } from "../../helpers/context/AuthContext";
 import { IGameSession, IUser } from "../../helpers/types";
 
-
 interface IGameWinResults {
   opponent: IUser
   gameSession: IGameSession
@@ -17,17 +16,18 @@ export function GameWinResults(props: IGameWinResults) {
     return (<Text>No Win</Text>)
     
   const isWinner = authState.user._id === props.gameSession.win.winnerID
-
+  const winMessage = props.gameSession.win.isTie ? 'TIE' : isWinner ? 'You Won!' : 'You Lost!'
 
   return (
     <View>
-      <Text>{isWinner ? 'You Won!' : 'You are a looser!'}</Text>
-      <Text>{ props.gameSession.win.isTie ? 'TIE' : ''}</Text>
-      
+      <Text style={styles.winMessage}>{winMessage}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({ 
-
+  winMessage: {
+    fontSize: 30,
+    textAlign: 'center'
+  }
 })

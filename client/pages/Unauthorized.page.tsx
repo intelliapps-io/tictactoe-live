@@ -17,7 +17,7 @@ export default function UnauthorizedPage() {
 
   return (
     <View style={styles.contentView}>
-      <Text h1 style={{ marginBottom: 40 }}>TikTacToe Live</Text>
+      <Text h1 style={{ marginBottom: 40 }}>TicTacToe Live</Text>
       <Button
         title="Login"
         buttonStyle={{

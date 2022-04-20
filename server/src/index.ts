@@ -2,7 +2,7 @@
 import { logger } from './helpers/logger';
 import { Server } from "socket.io";
 import { join } from 'path'
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import http from "http";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
@@ -10,7 +10,7 @@ import { config } from './helpers/config';
 import mongoose from 'mongoose';
 import accountController from "./controllers/account"
 import gameController from "./controllers/game"
-import { authMiddleware, parseCookies, verifySocketCookies } from './helpers/auth';
+import { authMiddleware } from './helpers/auth';
 import { handleGameSockets } from './controllers/gameSockets';
 
 /**
@@ -27,21 +27,6 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(authMiddleware);
-// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-//   if (res.headersSent) {
-//     return next(err);
-//   }
-//   logger.error(__filename, err);
-//   res.status(err.status || 500).json({
-//     message: err.message,
-//     errors: err.errors,
-//   });
-// });
-
-// express routes
-// app.get('/', (req, res) => {
-//   res.send('Backend running on port 3000')
-// })
 app.use('/account', accountController)
 app.use('/game', gameController)
 
@@ -74,23 +59,9 @@ const io = new Server(server, {
   cors: {
     origin: cors_origin,
     methods: ["GET", "POST"],
-    // allowedHeaders: ["my-custom-header"],
     credentials: true
   }
 });
-
-// io.use(function (socket, next) {
-//   const { authenticated, userID } = verifySocketCookies(socket.handshake.headers.cookie)
-//   if (authenticated) {
-//     socket.handshake.auth.userID = userID;
-//     next()
-//   }
-//   else {
-//     logger.info(socket.handshake.headers.cookie)
-//     logger.info('Socket not authenticated, blocked')
-//     next(new Error('Authentication error'))
-//   }
-// })
 
 io.use((socket, next) => {
   const userID = socket.handshake.auth.userID;
