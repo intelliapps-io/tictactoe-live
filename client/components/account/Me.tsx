@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Button, Card, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Navigate } from 'react-router-native';
-import { config } from '../../helpers/config';
 import { AuthContext } from '../../helpers/context/AuthContext';
 
 export const MeComponent = () => {
-  const { axios, authState, logout } = useContext(AuthContext);
+  const { authState, logout } = useContext(AuthContext);
   // Get account info
 
   if (authState.user)
@@ -17,8 +16,6 @@ export const MeComponent = () => {
           {authState.user.firstName + ' ' + authState.user.lastName}
         </Card.Title>
         <Card.Divider />
-        {/* <Text><MailOutlined /> {userData.email}</Text>
-          <Text><PushpinOutlined /> {userData.totalGames} Total Games</Text> */}
         <View style={styles.infoRow}>
           <Icon name='email' color="#000" size={16} style={styles.icon} />
           <Text>{authState.user.email}</Text>

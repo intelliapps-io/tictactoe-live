@@ -17,6 +17,5 @@ config = {
   WEBSOCKET_SERVER_URL: 'ws://localhost:3000'  
 }
 
-
 export { config }
 
