@@ -45,7 +45,7 @@ export function GameStartMenu(props: IGameStartMenu) {
   return (
     <Card>
       <Card.Title style={styles.title}>
-        TikTacToe Live
+        TiCTacToe Live
       </Card.Title>
       <Card.Divider />
       <View style={styles.infoRow}>
