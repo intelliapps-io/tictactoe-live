@@ -9,10 +9,10 @@ import mongoose from 'mongoose';
 type BoardCellState = 'X' | 'O' | null
 
 export interface IWinResult {
-  winCells: number[][]
-  winSymbol: "X" | "O"
-  winnerID: string
-  isTie: boolean
+  winCells: number[][];
+  winSymbol: "X" | "O" | null;
+  winnerID: string;
+  isTie: boolean;
 }
 
 export interface IGameSession {

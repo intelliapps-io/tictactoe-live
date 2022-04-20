@@ -14,6 +14,8 @@ export function Gameboard() {
 
   if (!gameSession || !authState.user)
     return <Text>Error joining game</Text>
+  
+  const isWinner = gameSession.win && authState.user._id === gameSession.win.winnerID ? true : false
 
   const playerInfo: IPlayerInfo = {
     symbol: authState.user._id === gameSession.user1ID ? gameSession.player1Symbol : gameSession.player2Symbol,
@@ -59,7 +61,7 @@ export function Gameboard() {
 
   return (
     <Card>
-      <Text style={styles.title} >Game Code: {gameSession.gameID}</Text>
+      {!gameSession.win && <Text style={styles.title} >Game Code: {gameSession.gameID}</Text>}
       
       {/* Game Info */}
       <View style={{ display: gameSession.win ? 'none' : undefined }}>
@@ -93,6 +95,7 @@ export function Gameboard() {
                 onPress={() => handleCellPress(i, j)}
                 disabled={!playerInfo.isTurn || gameSession.win ? true : false}
                 isWinCell={isWinCell}
+                isWinner={isWinner}
               />
             )
           }

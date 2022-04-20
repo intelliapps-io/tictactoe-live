@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TicTacToe Live",
-    "slug": "TicTacToe Live",
+    "name": "TicTacToe-Live",
+    "slug": "TicTacToe-Live",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "tiktactoe-live.herokuapp.com/"
+      "package": "com.jmoore24.TicTacToeLive"
     },
     "web": {
       "favicon": "./assets/favicon.png"

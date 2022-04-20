@@ -5,7 +5,7 @@ export function calcGameWin(session: IGameSession): IWinResult | null {
 
   let result: IWinResult = {
     winCells: [],
-    winSymbol: "X",
+    winSymbol: null,
     winnerID: "",
     isTie: false
   }
@@ -36,20 +36,23 @@ export function calcGameWin(session: IGameSession): IWinResult | null {
   }
 
   // set winner
-  if (result.winSymbol === session.player1Symbol)
-    result.winnerID = session.user1ID
-  else
-    result.winnerID = session.user2ID!
-  
+  if (result.winSymbol !== null) {
+    if (result.winSymbol === session.player1Symbol)
+      result.winnerID = session.user1ID;
+    else result.winnerID = session.user2ID!;
+  }
+
   // find tie
-  let noCellLeft = true
-  for (let i = 0; i < board.length; i++) 
+  let noCellLeft = true;
+  for (let i = 0; i < board.length; i++)
     for (let j = 0; j < board[i].length; j++) {
-      if (board[i][j] === null) noCellLeft = false
-      break
+      if (board[i][j] === null) {
+        noCellLeft = false;
+        break;
+      }
     }
-  
-  result.isTie = noCellLeft
-  
-  return result.winCells.length === 0 ? null : result
+
+  result.isTie = noCellLeft && result.winSymbol === null;
+
+  return result.winCells.length !== 0 || result.isTie ? result : null;
 }
