@@ -12,10 +12,10 @@ let config: IConfig = {
 }
 
 // uncomment for localhost
-config = {
-  BASE_SERVER_URL: 'http://localhost:3000',
-  WEBSOCKET_SERVER_URL: 'ws://localhost:3000'  
-}
+// config = {
+//   BASE_SERVER_URL: 'http://localhost:3000',
+//   WEBSOCKET_SERVER_URL: 'ws://localhost:3000'  
+// }
 
 export { config }
 
